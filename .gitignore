@@ -1,0 +1,34 @@
+# Compiled source #
+*.class
+*/bin/*
+
+# Eclipse files
+.project
+.classpath
+.settings
+.metadata
+
+# Packages
+*.jar
+
+# Maven build files
+target
+reports
+# ARQ tests
+arq-perf
+
+# PMD
+.pmd
+
+# Merge files
+*.orig
+
+# backup files
+*.*~
+
+#log files
+sdk-config-cache-non-cdi/transaction.log
+
+# checkstyle file
+**/.checkstyle
+**/*/.checkstyle
