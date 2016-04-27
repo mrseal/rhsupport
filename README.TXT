@@ -1,79 +1,26 @@
-+----------------------------+
-WHERE TO PUT THINGS?
-+----------------------------+
+How to run the application?
 
-api
-================================
+1. Configure the jms queue in standalone-full.xml, Under messaging subsystem add:
 
-All remote interfaces and POJOs used by other services.
-This is the module other services will depend on (compile time) when using your service.
-Anything found in this module will be considered part of your interface and you will have to maintain backward compatibility.
+                    <address-setting match="jms.queue.testqueue">
+                        <dead-letter-address>jms.queue.DLQ</dead-letter-address>
+                        <expiry-address>jms.queue.ExpiryQueue</expiry-address>
+                        <redelivery-delay>0</redelivery-delay>
+                        <max-size-bytes>10240</max-size-bytes>
+                        <page-size-bytes>2097152</page-size-bytes>
+                        <address-full-policy>FAIL</address-full-policy>
+                        <message-counter-history-day-limit>10</message-counter-history-day-limit>
+                    </address-setting>
+                    ... ...
 
+                    <jms-queue name="testqueue">
+                        <entry name="queue/testqueue"/>
+                    </jms-queue
 
+2. Start JBoss
+   /usr/local/jboss-eap-6.4.5$ bin/standalone.sh -c standalone-full.xml -b 0.0.0.0 
 
+3. Maven build the project and deploy sample-ejb-service-ear/target/sample-ejb-service-ear-1.0.1-SNAPSHOT.ear
 
-jar
-================================
-
-CDI (non-JEE) implementation. Might be used when testing JSE environment. Should not use anything not available in CDI environment
-(JEE things, for example).
-
-
-
-
-ejb
-================================
-
-JEE wrapper around (mostly for remoting and transaction management) around jar module.
-Should contain only EJBs (SLSB, SFSB, Singletons).
-
-
-
-
-war
-================================
-
-All web implementation artifacts: Restful services, Servlets, JSPs etc
-
-
-
-
-ear
-================================
-
-Responsible for packaging whole project.
-The final package (EAR) must not contain any plexus*, solder*, slf4j*, infinispan-cdi*, juel*, openaz*, jgroups*, cache-api*, commons* or 
-maven-plugin* jar file either in itself or its sub-modules (WAR).
-
-
-
-
-testsuite
-================================
-
-See README.TXT under testsuite folder for more details.
-
-
-
-
-+----------------------------+
-BUILDING
-+----------------------------+
-
-- Do "mvn clean install" under the root project folder for basic building and firing unit tests. 
-
-
-+----------------------------+
-TESTING
-+----------------------------+
-
-- Check README.TXT under testsuite module for details of testing.
-
-
-+----------------------------+
-DEPLOYING TO JBOSS
-+----------------------------+
-
-- System property JBOSS_HOME should point to the installation folder of JBoss (EAP6 - not community version).
-- Once you started JBoss you have to execute mvn jboss-as:deploy to deploy service
+4. http://127.0.0.1:8080/sample-ejb-service/jmstest?num=10&size=300
 
